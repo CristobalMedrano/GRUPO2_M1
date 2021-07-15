@@ -1,5 +1,7 @@
 package com.example.diplomadosuno.repositories;
 
+import java.util.List;
+
 import com.example.diplomadosuno.models.Postulant;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,9 @@ public class PostulantRepositoryImp implements PostulantRepository {
 
     @Override
     public Postulant createPostulant(Postulant postulant) {
-        try (Connection conn = sql2o.open()) {
+
+        Connection conn = sql2o.open();
+        try {
             String query = "INSERT INTO postulants (name, email) values (:vName, :vEmail)";
             long insertedId = (long) conn.createQuery(query, true)
                 .addParameter("vName", postulant.getName())
@@ -25,9 +29,78 @@ public class PostulantRepositoryImp implements PostulantRepository {
             return postulant;
                             
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            //System.out.println(e.getMessage());
             return null;
+        }finally{
+            conn.close();
         }
     }
 
+    @Override
+    public List<Postulant> getAllPostulants() {
+
+        Connection conn = sql2o.open();
+        try{
+            return conn.createQuery("SELECT name, email FROM postulants")
+                .executeAndFetch(Postulant.class);
+        }catch(Exception e){
+            //System.out.println(e.getMessage());
+            return null;
+        }finally{
+            conn.close();
+        }
+    }
+
+    @Override
+    public List<Postulant> deletePostulant(long id) {
+        Connection conn = sql2o.open();
+
+        try{
+            conn.createQuery("DELETE FROM postulants WHERE id = :deleteId")
+                .addParameter("deleteId", id)
+                .executeUpdate();
+            return getAllPostulants();
+
+        }catch(Exception e){
+            return null;
+
+        }finally{
+            conn.close();
+        }    
+        
+    }
+
+    @Override
+    public Postulant updatePostulant(long id, Postulant postulant) {
+        Connection conn = sql2o.open();
+
+        try{
+            conn.createQuery("UPDATE postulant SET email = :eMail, name = :uName WHERE id = :uId")
+                .addParameter("eMail", postulant.getEmail())
+                .addParameter("uName", postulant.getName())
+                .addParameter("uId", id)
+                .executeUpdate();
+            return postulant;
+        }catch(Exception e){
+            return null;
+        }finally{
+            conn.close();           
+        }
+     
+    }
+    @Override
+    public List<Postulant> getByEmail(String email) {
+        Connection conn = sql2o.open();
+        try{
+            return conn.createQuery("SELECT name, email FROM postulants WHERE email = :eMail")
+                .addParameter("eMail", email)
+                .executeAndFetch(Postulant.class);
+        }catch(Exception e){
+            //System.out.println(e.getMessage());
+            return null;
+        }finally{
+            conn.close();
+        }
+        
+    }
 }
