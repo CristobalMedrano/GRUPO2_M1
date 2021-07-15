@@ -41,7 +41,7 @@ public class PostulantRepositoryImp implements PostulantRepository {
 
         Connection conn = sql2o.open();
         try{
-            return conn.createQuery("SELECT name, email FROM postulants")
+            return conn.createQuery("SELECT id, name, email FROM postulants")
                 .executeAndFetch(Postulant.class);
         }catch(Exception e){
             //System.out.println(e.getMessage());
@@ -89,11 +89,11 @@ public class PostulantRepositoryImp implements PostulantRepository {
      
     }
     @Override
-    public Postulant getByEmail(String email) {
+    public Postulant getById(long id) {
         Connection conn = sql2o.open();
         try{
-            return conn.createQuery("SELECT name, email FROM postulants WHERE email = :eMail")
-                .addParameter("eMail", email)
+            return conn.createQuery("SELECT id, name, email FROM postulants WHERE id = :nId")
+                .addParameter("nId", id)
                 .executeAndFetchFirst(Postulant.class);
         }catch(Exception e){
             //System.out.println(e.getMessage());

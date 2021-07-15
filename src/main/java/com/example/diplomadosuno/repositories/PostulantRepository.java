@@ -10,7 +10,7 @@ public interface PostulantRepository {
     public List<Postulant> getAllPostulants();
     public List<Postulant> deletePostulant(long id);
     public Postulant updatePostulant(long id, Postulant postulant);
-    public Postulant getByEmail(String email);
+    public Postulant getById(long id);
 
 
 }

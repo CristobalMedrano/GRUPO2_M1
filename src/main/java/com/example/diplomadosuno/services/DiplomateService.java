@@ -3,7 +3,6 @@ package com.example.diplomadosuno.services;
 import java.util.List;
 
 import com.example.diplomadosuno.models.Diplomate;
-import com.example.diplomadosuno.models.Postulant;
 import com.example.diplomadosuno.repositories.DiplomateRepository;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -40,9 +39,9 @@ public class DiplomateService {
         return diplomateRepository.getAllDiplomates();
     }
 
-    @GetMapping("/diplomates/{title}")
-    public Diplomate getDiplomateByTitle(@PathVariable String title){
-        return diplomateRepository.getByTitle(title);
+    @GetMapping("/diplomates/{id}")
+    public Diplomate getDiplomateByTitle(@PathVariable long id){
+        return diplomateRepository.getById(id);
     }
 
     @DeleteMapping("/diplomates/{id}")

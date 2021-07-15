@@ -39,9 +39,9 @@ public class PostulantService {
         return postulantRepository.getAllPostulants();
     }
 
-    @GetMapping("/postulants/{email}")
-    public Postulant getPostulantByEmail(@PathVariable String email){
-        return postulantRepository.getByEmail(email);
+    @GetMapping("/postulants/{id}")
+    public Postulant getPostulantById(@PathVariable long id){
+        return postulantRepository.getById(id);
     }
 
     @DeleteMapping("/postulants/{id}")

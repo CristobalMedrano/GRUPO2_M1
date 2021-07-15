@@ -5,9 +5,11 @@ import java.util.List;
 import com.example.diplomadosuno.models.Diplomate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 
+@Repository
 public class DiplomateRepositoryImp implements DiplomateRepository {
 
     @Autowired
@@ -70,11 +72,11 @@ public class DiplomateRepositoryImp implements DiplomateRepository {
     }
 
     @Override
-    public Diplomate getByTitle(String title) {
+    public Diplomate getById(long id) {
         Connection conn = sql2o.open();
         try{
-            return conn.createQuery("SELECT * FROM diplomates WHERE title = :nTitle")
-                .addParameter("nTitle", title)
+            return conn.createQuery("SELECT * FROM diplomates WHERE id = :nId")
+                .addParameter("nId", id)
                 .executeAndFetchFirst(Diplomate.class);
     
         }catch(Exception e){

@@ -9,7 +9,7 @@ public interface DiplomateRepository {
     public List<Diplomate> getAllDiplomates();
     public Diplomate createDiplomate(Diplomate diplomate);
     public Diplomate updateDiplomate(long id, Diplomate diplomate);
-    public Diplomate getByTitle(String title);
+    public Diplomate getById(long id);
     public List<Diplomate> deleteDiplomate(long id);
     
 }
