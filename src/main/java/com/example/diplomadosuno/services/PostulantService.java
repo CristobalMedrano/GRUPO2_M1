@@ -40,7 +40,7 @@ public class PostulantService {
     }
 
     @GetMapping("/postulants/{email}")
-    public List<Postulant> getPostulantByEmail(@PathVariable String email){
+    public Postulant getPostulantByEmail(@PathVariable String email){
         return postulantRepository.getByEmail(email);
     }
 

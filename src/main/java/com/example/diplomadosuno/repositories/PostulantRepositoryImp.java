@@ -75,7 +75,7 @@ public class PostulantRepositoryImp implements PostulantRepository {
         Connection conn = sql2o.open();
 
         try{
-            conn.createQuery("UPDATE postulant SET email = :eMail, name = :uName WHERE id = :uId")
+            conn.createQuery("UPDATE postulants SET email = :eMail, name = :uName WHERE id = :uId")
                 .addParameter("eMail", postulant.getEmail())
                 .addParameter("uName", postulant.getName())
                 .addParameter("uId", id)
@@ -89,12 +89,12 @@ public class PostulantRepositoryImp implements PostulantRepository {
      
     }
     @Override
-    public List<Postulant> getByEmail(String email) {
+    public Postulant getByEmail(String email) {
         Connection conn = sql2o.open();
         try{
             return conn.createQuery("SELECT name, email FROM postulants WHERE email = :eMail")
                 .addParameter("eMail", email)
-                .executeAndFetch(Postulant.class);
+                .executeAndFetchFirst(Postulant.class);
         }catch(Exception e){
             //System.out.println(e.getMessage());
             return null;
