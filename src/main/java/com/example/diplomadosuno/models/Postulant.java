@@ -5,6 +5,7 @@ public class Postulant {
     private long id;
     private String name;
     private String email;
+    private long id_diplomate;
 
     public long getId() {
         return id;
@@ -12,6 +13,14 @@ public class Postulant {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public long getId_diplomate(){
+        return id_diplomate;
+    }
+
+    public void setId_diplomate(long id_diplomate){
+        this.id_diplomate = id_diplomate;
     }
 
     public String getName() {

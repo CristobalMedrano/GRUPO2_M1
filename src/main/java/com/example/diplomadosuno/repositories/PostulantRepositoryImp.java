@@ -20,16 +20,17 @@ public class PostulantRepositoryImp implements PostulantRepository {
 
         Connection conn = sql2o.open();
         try {
-            String query = "INSERT INTO postulants (name, email) values (:vName, :vEmail)";
+            String query = "INSERT INTO postulants (name, email, id_diplomate) values (:vName, :vEmail, :vIdDiplomate)";
             long insertedId = (long) conn.createQuery(query, true)
                 .addParameter("vName", postulant.getName())
                 .addParameter("vEmail", postulant.getEmail())
+                .addParameter("vIdDiplomate", postulant.getId_diplomate())
                 .executeUpdate().getKey();
             postulant.setId(insertedId);
             return postulant;
                             
         } catch (Exception e) {
-            //System.out.println(e.getMessage());
+            System.out.println(e.getMessage());
             return null;
         }finally{
             conn.close();
@@ -41,7 +42,7 @@ public class PostulantRepositoryImp implements PostulantRepository {
 
         Connection conn = sql2o.open();
         try{
-            return conn.createQuery("SELECT id, name, email FROM postulants")
+            return conn.createQuery("SELECT id, name, email, id_diplomate FROM postulants")
                 .executeAndFetch(Postulant.class);
         }catch(Exception e){
             //System.out.println(e.getMessage());
@@ -75,9 +76,10 @@ public class PostulantRepositoryImp implements PostulantRepository {
         Connection conn = sql2o.open();
 
         try{
-            conn.createQuery("UPDATE postulants SET email = :eMail, name = :uName WHERE id = :uId")
+            conn.createQuery("UPDATE postulants SET email = :eMail, name = :uName, id_diplomate = :uIdDiplomate WHERE id = :uId")
                 .addParameter("eMail", postulant.getEmail())
                 .addParameter("uName", postulant.getName())
+                .addParameter("uIdDiplomate", postulant.getId_diplomate())
                 .addParameter("uId", id)
                 .executeUpdate();
             return postulant;
@@ -92,7 +94,7 @@ public class PostulantRepositoryImp implements PostulantRepository {
     public Postulant getById(long id) {
         Connection conn = sql2o.open();
         try{
-            return conn.createQuery("SELECT id, name, email FROM postulants WHERE id = :nId")
+            return conn.createQuery("SELECT id, name, email, id_diplomate FROM postulants WHERE id = :nId")
                 .addParameter("nId", id)
                 .executeAndFetchFirst(Postulant.class);
         }catch(Exception e){
