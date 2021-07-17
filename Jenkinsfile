@@ -5,6 +5,9 @@ pipeline {
         BACKEND_FOLDER = ""
         TEST_FOLDER = "build/test-results/test"
         DOCKERHUB_CREDENTIALS = credentials('rodolfato-dockerhub')
+        SPRING_DB_URL = credentials('database-url')
+        SPRING_DB_USERNAME = credentials('database-username')
+        SPRING_DB_PASSWORD = credentials('database-password')
     }
     stages {
         stage("Inicio del Pipeline") {
@@ -12,16 +15,7 @@ pipeline {
                 echo "Iniciando Pipeline: ${env.JOB_NAME}" 
             }
         }
-        stage("Analisis de SonarQube") {
-            steps {
-				dir("${env.WORKSPACE}") {
-					withSonarQubeEnv("${env.SONARQUBE_SERVER}") {
-						sh "chmod +x ./gradlew"
-						sh "./gradlew sonarqube"
-    					}
-				}
-  		    }
-        }
+        
         stage("Pruebas unitarias y de integración con JUnit"){            
             steps{
                 dir("${env.WORKSPACE}/${env.TEST_FOLDER}") {
@@ -41,6 +35,16 @@ pipeline {
 				}
             }
         }
+        stage("Analisis de SonarQube") {
+            steps {
+				dir("${env.WORKSPACE}") {
+					withSonarQubeEnv("${env.SONARQUBE_SERVER}") {
+						sh "chmod +x ./gradlew"
+						sh "./gradlew sonarqube"
+    					}
+				}
+  		    }
+        }
         stage("Creacion de container de aplicacion y subida a dockerhub"){
             steps{
                 dir("${env.WORKSPACE}"){
@@ -54,7 +58,7 @@ pipeline {
                 }
                 dir("${env.WORKSPACE}"){
                     echo 'Login a Dockerhub'
-                    sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --pasword-stdin'
+                    sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
                 }
                 dir("${env.WORKSPACE}"){
                     echo 'Push imagen a Dockerhub'
