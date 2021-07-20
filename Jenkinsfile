@@ -54,7 +54,7 @@ pipeline {
                 }
                 dir("${env.WORKSPACE}"){
                     echo 'Ejecutando Dockerfile'
-                    sh 'docker build -t rodolfato/microservicio1:$GIT_COMMIT .'
+                    sh 'docker build -t rodolfato/microservicio1 .'
                 }
                 dir("${env.WORKSPACE}"){
                     echo 'Login a Dockerhub'
@@ -62,7 +62,7 @@ pipeline {
                 }
                 dir("${env.WORKSPACE}"){
                     echo 'Push imagen a Dockerhub'
-                    sh 'docker push rodolfato/microservicio1:$GIT_COMMIT'
+                    sh 'docker push rodolfato/microservicio1'
                 }
             }
         }
