@@ -73,8 +73,8 @@ pipeline {
                 sshagent(credentials: ['GCP_DEPLOYMENT_SERVER']){
                     sh 'ssh -o StrictHostKeyChecking=no rodolfoandresm_gmail_com@34.85.179.249'
                     sh 'scp $DOCKER_COMPOSE_M1 rodolfoandresm_gmail_com@34.85.179.249:/home/rodolfoandresm_gmail_com'
-                    sh 'ssh -o StrictHostKeyChecking=no rodolfoandresm_gmail_com@34.85.179.249 docker-compose -d -f docker_compose_m1.yml up'
-                    sh 'ssh -o StrictHostKeyChecking=no rodolfoandresm_gmail_com@34.85.179.249 rm docker_compose_m1.yml'
+                    sh 'ssh -o StrictHostKeyChecking=no rodolfoandresm_gmail_com@34.85.179.249 docker-compose -f docker_compose_m1.yml up -d'
+                    sh 'ssh -o StrictHostKeyChecking=no rodolfoandresm_gmail_com@34.85.179.249 rm -f docker_compose_m1.yml'
                 }
             }
 
