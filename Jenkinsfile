@@ -70,7 +70,7 @@ pipeline {
                 }
             }
         }
-        stage("Deployment on GCP Compute Engine"){
+        stage("Deployment"){
             steps{
                 sshagent(credentials: ['GCP_DEPLOYMENT_SERVER']){
                     sh 'echo Corriendo aplicacion en GCP'
