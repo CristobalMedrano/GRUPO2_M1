@@ -72,7 +72,7 @@ pipeline {
             steps{
                 sshagent(credentials: ['GCP_DEPLOYMENT_SERVER']){
                     sh 'ssh -o StrictHostKeyChecking=no rodolfoandresm_gmail_com@34.85.179.249'
-                    sh 'scp $DOCKER_COMPOSE_M1 rodolfoandresm_gmail_com@34.85.179.249'
+                    sh 'scp $DOCKER_COMPOSE_M1 rodolfoandresm_gmail_com@34.85.179.249:/home/rodolfoandresm_gmail_com'
                 }
             }
 
