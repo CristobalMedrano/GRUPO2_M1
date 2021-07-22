@@ -9,6 +9,8 @@ pipeline {
         SPRING_DB_USERNAME = credentials('database-username')
         SPRING_DB_PASSWORD = credentials('database-password')
         DOCKER_COMPOSE_M1 = credentials('DOCKER_COMPOSE_M1')
+        DO_SERVER_IP = credentials('do-server-ip')
+        DO_SERVER_USR = credentials('do-server-username')
 
     }
     stages {
@@ -77,9 +79,12 @@ pipeline {
                     sh 'ssh -o StrictHostKeyChecking=no rodolfoandresm_gmail_com@34.85.179.249 docker-compose -f docker-compose-m1.yml up -d'
                     sh 'ssh -o StrictHostKeyChecking=no rodolfoandresm_gmail_com@34.85.179.249 rm -f docker-compose-m1.yml'
                 }
-                dir("${env.WORKSPACE}"){
-                    sh 'echo Corriendo aplicacion en servidor actual DigitalOcean'
-                    sh 'docker-compose -f $DOCKER_COMPOSE_M1 up -d'
+                sshagent(credentials: ['DO_DEPLOYMENT_SERVER']){
+                    sh 'echo Corriendo aplicacion en DigitalOcean'
+                    sh 'ssh -o StrictHostKeyChecking=no DO_SERVER_USR@DO_SERVER_USR rm -f docker-compose-m1.yml'
+                    sh 'scp $DOCKER_COMPOSE_M1 DO_SERVER_USR@DO_SERVER_USR:/opt/deployments'
+                    sh 'ssh -o StrictHostKeyChecking=no DO_SERVER_USR@DO_SERVER_USR docker-compose -f docker-compose-m1.yml up -d'
+                    sh 'ssh -o StrictHostKeyChecking=no DO_SERVER_USR@DO_SERVER_USR rm -f docker-compose-m1.yml'
                 }
             }
         }
