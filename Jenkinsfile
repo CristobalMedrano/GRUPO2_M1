@@ -8,6 +8,8 @@ pipeline {
         SPRING_DB_URL = credentials('database-url')
         SPRING_DB_USERNAME = credentials('database-username')
         SPRING_DB_PASSWORD = credentials('database-password')
+        DOCKER_COMPOSE_M1 = credentials('DOCKER_COMPOSE_M1')
+
     }
     stages {
         stage("Inicio del Pipeline") {
@@ -70,7 +72,7 @@ pipeline {
             steps{
                 sshagent(credentials: ['GCP_DEPLOYMENT_SERVER']){
                     sh 'ssh -o StrictHostKeyChecking=no rodolfoandresm_gmail_com@34.85.179.249'
-                    sh 'ssh touch this_works'
+                    sh 'scp $DOCKER_COMPOSE_M1 rodolfoandresm_gmail_com@34.85.179.249'
                 }
             }
 
