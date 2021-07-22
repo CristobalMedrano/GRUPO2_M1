@@ -8,6 +8,10 @@ pipeline {
         SPRING_DB_URL = credentials('database-url')
         SPRING_DB_USERNAME = credentials('database-username')
         SPRING_DB_PASSWORD = credentials('database-password')
+        DOCKER_COMPOSE_M1 = credentials('DOCKER_COMPOSE_M1')
+        DO_SERVER_IP = credentials('do-server-ip')
+        DO_SERVER_USR = credentials('do-server-username')
+
     }
     stages {
         stage("Inicio del Pipeline") {
@@ -54,7 +58,7 @@ pipeline {
                 }
                 dir("${env.WORKSPACE}"){
                     echo 'Ejecutando Dockerfile'
-                    sh 'docker build -t rodolfato/microservicio1:latest .'
+                    sh 'docker build -t rodolfato/microservicio1 .'
                 }
                 dir("${env.WORKSPACE}"){
                     echo 'Login a Dockerhub'
@@ -62,7 +66,25 @@ pipeline {
                 }
                 dir("${env.WORKSPACE}"){
                     echo 'Push imagen a Dockerhub'
-                    sh 'docker push rodolfato/microservicio1:latest'
+                    sh 'docker push rodolfato/microservicio1'
+                }
+            }
+        }
+        stage("Deployment on GCP Compute Engine"){
+            steps{
+                sshagent(credentials: ['GCP_DEPLOYMENT_SERVER']){
+                    sh 'echo Corriendo aplicacion en GCP'
+                    sh 'ssh -o StrictHostKeyChecking=no rodolfoandresm_gmail_com@34.85.179.249 rm -f docker-compose-m1.yml'
+                    sh 'scp $DOCKER_COMPOSE_M1 rodolfoandresm_gmail_com@34.85.179.249:/home/rodolfoandresm_gmail_com'
+                    sh 'ssh -o StrictHostKeyChecking=no rodolfoandresm_gmail_com@34.85.179.249 docker-compose -f docker-compose-m1.yml up -d'
+                    sh 'ssh -o StrictHostKeyChecking=no rodolfoandresm_gmail_com@34.85.179.249 rm -f docker-compose-m1.yml'
+                }
+                sshagent(credentials: ['DO_DEPLOYMENT_SERVER']){
+                    sh 'echo Corriendo aplicacion en DigitalOcean'
+                    sh 'ssh -o StrictHostKeyChecking=no $DO_SERVER_USR@$DO_SERVER_IP rm -f /opt/deployments/docker-compose-m1.yml'
+                    sh 'scp $DOCKER_COMPOSE_M1 $DO_SERVER_USR@$DO_SERVER_IP:/opt/deployments'
+                    sh 'ssh -o StrictHostKeyChecking=no $DO_SERVER_USR@$DO_SERVER_IP docker-compose -f /opt/deployments/docker-compose-m1.yml up -d'
+                    sh 'ssh -o StrictHostKeyChecking=no $DO_SERVER_USR@$DO_SERVER_IP rm -f /opt/deployments/docker-compose-m1.yml'
                 }
             }
         }
