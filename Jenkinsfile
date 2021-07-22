@@ -67,9 +67,11 @@ pipeline {
             }
         }
         stage("Deployment on GCP Compute Engine"){
-            def runContainer = 'docker run -p 3000:3000 -d -name diplomados-front rodolfato/microservicio3'
-            sshagent(credentials: ['GCP_DEPLOYMENT_SERVER']){
-                sh 'ssh -o StrictHostKeyChecking=no rodolfoandresm_gmail_com@34.85.179.249 ${runContainer}'
+            steps{
+                def runContainer = 'docker run -p 3000:3000 -d -name diplomados-front rodolfato/microservicio3'
+                sshagent(credentials: ['GCP_DEPLOYMENT_SERVER']){
+                    sh 'ssh -o StrictHostKeyChecking=no rodolfoandresm_gmail_com@34.85.179.249 ${runContainer}'
+                }
             }
 
         }
