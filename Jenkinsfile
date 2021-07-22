@@ -81,10 +81,10 @@ pipeline {
                 }
                 sshagent(credentials: ['DO_DEPLOYMENT_SERVER']){
                     sh 'echo Corriendo aplicacion en DigitalOcean'
-                    sh 'ssh -o StrictHostKeyChecking=no DO_SERVER_USR@DO_SERVER_USR rm -f docker-compose-m1.yml'
-                    sh 'scp $DOCKER_COMPOSE_M1 DO_SERVER_USR@DO_SERVER_USR:/opt/deployments'
-                    sh 'ssh -o StrictHostKeyChecking=no DO_SERVER_USR@DO_SERVER_USR docker-compose -f docker-compose-m1.yml up -d'
-                    sh 'ssh -o StrictHostKeyChecking=no DO_SERVER_USR@DO_SERVER_USR rm -f docker-compose-m1.yml'
+                    sh 'ssh -o StrictHostKeyChecking=no $DO_SERVER_USR@$DO_SERVER_USR rm -f /opt/deployments/docker-compose-m1.yml'
+                    sh 'scp $DOCKER_COMPOSE_M1 $DO_SERVER_USR@$DO_SERVER_USR:/opt/deployments'
+                    sh 'ssh -o StrictHostKeyChecking=no $DO_SERVER_USR@$DO_SERVER_USR docker-compose -f /opt/deployments/docker-compose-m1.yml up -d'
+                    sh 'ssh -o StrictHostKeyChecking=no $DO_SERVER_USR@$DO_SERVER_USR rm -f /opt/deployments/docker-compose-m1.yml'
                 }
             }
         }
