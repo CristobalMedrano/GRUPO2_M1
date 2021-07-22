@@ -69,7 +69,8 @@ pipeline {
         stage("Deployment on GCP Compute Engine"){
             steps{
                 sshagent(credentials: ['GCP_DEPLOYMENT_SERVER']){
-                    sh 'ssh -o StrictHostKeyChecking=no rodolfoandresm_gmail_com@34.85.179.249 docker run -p 8081:8081 -d -name diplomados-m1 -e SPRING_DB_URL="$SPRING_DB_URL" -e SPRING_DB_USERNAME="$SPRING_DB_USERNAME" -e SPRING_DB_PASSWORD="$SPRING_DB_PASSWORD" rodolfato/microservicio1'
+                    sh 'ssh -o StrictHostKeyChecking=no rodolfoandresm_gmail_com@34.85.179.249'
+                    sh 'ssh touch this_works'
                 }
             }
 
