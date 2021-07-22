@@ -12,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.assertj.core.api.Assertions;
-
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class DiplomadosUnoApplicationTests {
 	
@@ -31,13 +29,4 @@ class DiplomadosUnoApplicationTests {
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 	}
-
-	@Test
-	@DisplayName("Prueba que no existan exceptions en main.")
-	void mainFunction(){
-		Assertions.assertThatNoException().isThrownBy(() -> DiplomadosUnoApplication.main(new String[] {}));
-	}
-
-	
-
 }
