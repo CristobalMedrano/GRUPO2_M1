@@ -72,13 +72,6 @@ pipeline {
         }
         stage("Deployment"){
             steps{
-                sshagent(credentials: ['GCP_DEPLOYMENT_SERVER']){
-                    sh 'echo Corriendo aplicacion en GCP'
-                    sh 'ssh -o StrictHostKeyChecking=no rodolfoandresm_gmail_com@34.85.179.249 rm -f docker-compose-m1.yml'
-                    sh 'scp $DOCKER_COMPOSE_M1 rodolfoandresm_gmail_com@34.85.179.249:/home/rodolfoandresm_gmail_com'
-                    sh 'ssh -o StrictHostKeyChecking=no rodolfoandresm_gmail_com@34.85.179.249 docker-compose -f docker-compose-m1.yml up -d'
-                    sh 'ssh -o StrictHostKeyChecking=no rodolfoandresm_gmail_com@34.85.179.249 rm -f docker-compose-m1.yml'
-                }
                 sshagent(credentials: ['DO_DEPLOYMENT_SERVER']){
                     sh 'echo Corriendo aplicacion en DigitalOcean'
                     sh 'ssh -o StrictHostKeyChecking=no $DO_SERVER_USR@$DO_SERVER_IP rm -f /opt/deployments/docker-compose-m1.yml'
