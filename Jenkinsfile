@@ -9,6 +9,7 @@ pipeline {
         SPRING_DB_USERNAME = credentials('database-username')
         SPRING_DB_PASSWORD = credentials('database-password')
         DOCKER_COMPOSE_M1 = credentials('DOCKER_COMPOSE_M1')
+        BASH_SCRIPT_M1 = credentials('bash-script-m1')
         DO_SERVER_IP = credentials('do-server-ip')
         DO_SERVER_USR = credentials('do-server-username')
 
@@ -58,7 +59,7 @@ pipeline {
                 }
                 dir("${env.WORKSPACE}"){
                     echo 'Ejecutando Dockerfile'
-                    sh 'docker build -t rodolfato/microservicio1 .'
+                    sh 'docker build -t rodolfato/microservicio1:$GIT_COMMIT -t rodolfato/microservicio1 .'
                 }
                 dir("${env.WORKSPACE}"){
                     echo 'Login a Dockerhub'
@@ -67,6 +68,7 @@ pipeline {
                 dir("${env.WORKSPACE}"){
                     echo 'Push imagen a Dockerhub'
                     sh 'docker push rodolfato/microservicio1'
+                    sh 'docker push rodolfato/microservicio1:$GIT_COMMIT'
                 }
             }
         }
@@ -74,10 +76,12 @@ pipeline {
             steps{
                 sshagent(credentials: ['DO_DEPLOYMENT_SERVER']){
                     sh 'echo Corriendo aplicacion en DigitalOcean'
+                    sh 'echo Eliminando cualquier composer antiguo y copiando el actual'
                     sh 'ssh -o StrictHostKeyChecking=no $DO_SERVER_USR@$DO_SERVER_IP rm -f /opt/deployments/docker-compose-m1.yml'
                     sh 'scp $DOCKER_COMPOSE_M1 $DO_SERVER_USR@$DO_SERVER_IP:/opt/deployments'
-                    sh 'ssh -o StrictHostKeyChecking=no $DO_SERVER_USR@$DO_SERVER_IP docker-compose -f /opt/deployments/docker-compose-m1.yml up -d'
-                    sh 'ssh -o StrictHostKeyChecking=no $DO_SERVER_USR@$DO_SERVER_IP rm -f /opt/deployments/docker-compose-m1.yml'
+                    sh 'scp $BASH_SCRIPT_M1 $DO_SERVER_USR@$DO_SERVER_IP:/opt/deployments'
+                    sh 'ssh -o StrictHostKeyChecking=no $DO_SERVER_USR@$DO_SERVER_IP bash /opt/deployments/m1_script.sh $GIT_COMMIT'
+                    sh 'ssh -o StrictHostKeyChecking=no $DO_SERVER_USR@$DO_SERVER_IP rm /opt/deployments/m1_script.sh -f'
                 }
             }
         }
@@ -90,6 +94,7 @@ pipeline {
     post {
         always {
             sh 'docker logout'
+            sh 'docker system prune -f'
         }
     }
 }
