@@ -38,7 +38,5 @@ class DiplomateServiceTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
-
-
-    
+        
 }
