@@ -12,7 +12,7 @@ public class HomeService {
 
     @GetMapping("/")
     public @ResponseBody String greeting(){
-        return "Microservicio 1 - Grupo 2 Taller de Ingeniería de Software ";
+        return "Microservicio 1 - Grupo 2 Taller de Ingeniería de Software <Cambio para afirmar la pera :3>";
     }
     
 }
